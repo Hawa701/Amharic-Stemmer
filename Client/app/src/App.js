@@ -20,7 +20,7 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div className="container">
       <h1>Amharic Stemmer</h1>
 
       <textarea
@@ -30,16 +30,16 @@ function App() {
         onChange={(e) => setInputText(e.target.value)}
         placeholder="Enter Amharic text"
       />
-      <br />
+
       <button onClick={handleStem} style={{ marginTop: "10px" }}>
         Stem Word
       </button>
 
       {stemmedWord && (
-        <div>
-          <h2>Stemmed Word:</h2>
+        <div className="result">
           <p>
-            <strong>{stemmedWord}</strong>
+            Stemmed text፡
+            <strong>{" " + stemmedWord}</strong>
           </p>
         </div>
       )}

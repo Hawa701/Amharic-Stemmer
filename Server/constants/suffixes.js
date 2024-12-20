@@ -1,3 +1,28 @@
-const suffixes = ["ሁ", "ና", "ቹ", "ው", "ዎችዎች", "ነት"];
+const amharicSuffixesEn = [
+  "yew",
+  "yie",
+  "wocn",
+  "woc",
+  "wa",
+  "w",
+  "nen",
+  "oc",
+  "ocacn",
+  "h",
+  "S",
+  "ie",
+  "ocie",
+  "Na",
+  "cew",
+  "cacew",
+  "ocacew",
+  "acn",
+  "acewn",
+  "acew",
+  "achu",
+  "am",
+  "c",
+  "um",
+];
 
-module.exports = suffixes;
+module.exports = amharicSuffixesEn;
