@@ -43,7 +43,7 @@ function removePrefix(wordEn) {
   }
 
   let stemmedPrefix =  wordEn.slice(longestString.length, wordEn.length);
-  console.log(stemmedPrefix + ` len : ${stemmedPrefix.length}`);
+  // console.log(stemmedPrefix + ` len : ${stemmedPrefix.length}`);
   if(stemmedPrefix.length <3 ){
     stemmedPrefix = wordEn;
   }
@@ -51,7 +51,7 @@ function removePrefix(wordEn) {
 }
 
 // Function to remove suffixes
-function removeSuffix(wordEn) {
+function removesuffix(wordEn) {
   let best_suffix = [];
   for (const suffix in suffixes) {
     if (wordEn.endsWith(suffixes[suffix])) {
@@ -60,22 +60,68 @@ function removeSuffix(wordEn) {
       best_suffix.push(found);
     }
   }
-  console.log(`List : ${best_suffix}`);
 
   let longestString = "";
+  let secondlongest = "";
+  let thridlongest = "";
+
   for (const str of best_suffix) {
     if (str.length > longestString.length) {
+      thridlongest = secondlongest;
+      secondlongest = longestString;
       longestString = str; 
+    }
+    else if (str.length > secondlongest.length){
+      thridlongest = secondlongest;
+      secondlongest = str;
+    }
+    else if (str.length > thridlongest.length){
+      thridlongest = str;
+    }    
+  }
+
+  let top_three = []
+  top_three.push(longestString);
+  top_three.push(secondlongest);
+  top_three.push(thridlongest);
+
+  let stemmedWord;
+
+  for(const suffix in top_three){
+    stemmedWord = wordEn.slice(0, -top_three[suffix].length);
+    if(stemmedWord.length>2){
+      break;
+      }
+      else{
+        stemmedWord = wordEn;
+      }
+  }
+
+
+  return stemmedWord;
+}
+
+function removeSuffix(wordEn) {
+  // Find all suffixes that match
+  const matchingSuffixes = suffixes.filter(suffix => wordEn.endsWith(suffix));
+
+  // Sort suffixes by length in descending order
+  const topThreeSuffixes = matchingSuffixes
+    .sort((a, b) => b.length - a.length)
+    .slice(0, 3);
+
+  // Attempt to remove suffixes in order of priority
+  for (const suffix of topThreeSuffixes) {
+    const stemmedWord = wordEn.slice(0, -suffix.length);
+    if (stemmedWord.length > 2) {
+      return stemmedWord;
     }
   }
 
-  let stemmedWord = wordEn.slice(0, -longestString.length);
-  if(stemmedWord.length<3){
-            stemmedWord = wordEn;
-
-  }
-  return stemmedWord;
+  // Return the original word if no valid suffix is removed
+  return wordEn;
 }
+
 
 // Function to convert Amharic to English
 function convertToEnglish(wordAm) {
@@ -116,7 +162,7 @@ function convertToAmharic(wordEn) {
         // for(i=0;i<leng;i++){
         while (leng > 0) {
           possibleSubstring = possibleSubstring + stack.pop();
-          console.log(possibleSubstring);
+          // console.log(possibleSubstring);
           leng--;
         }
 
@@ -146,7 +192,7 @@ function convertToAmharic(wordEn) {
         const amharicChar = Object.keys(fidels).find(
           (key) => fidels[key] === possibleSubstring
         );
-        console.log(possibleSubstring);
+        // console.log(possibleSubstring);
         // Add the matched character to the result
         if(amharicChar){
           wordAm = amharicChar + wordAm;

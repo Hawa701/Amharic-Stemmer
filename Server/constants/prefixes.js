@@ -12,7 +12,7 @@ const amharicPrefixesEn = [
   "le",
   "leye",
   "ye",
-  "be",
+  // "be",
   "al", //ef
   "een"
 ];
