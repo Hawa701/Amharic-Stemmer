@@ -19,6 +19,8 @@ function App() {
     }
   };
 
+  
+
   return (
     <div className="container">
       <h1>Amharic Stemmer</h1>

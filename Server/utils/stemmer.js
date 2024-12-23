@@ -28,16 +28,26 @@ function lookupInDictionary(word) {
 
 // Function to remove prefixes
 function removePrefix(wordEn) {
-  let found;
+  let best_prefix = [];
   for (const prefix in prefixes) {
     if (wordEn.startsWith(prefixes[prefix])) {
-      found = wordEn.slice(prefixes[prefix].length, wordEn.length);
-
-      break;
+      let found  = prefixes[prefix];
+      best_prefix.push(found);
+    }
+  }
+  let longestString = "";
+  for (const str of best_prefix) {
+    if (str.length > longestString.length) {
+      longestString = str;
     }
   }
 
-  return found != null ? found : wordEn;
+  let stemmedPrefix =  wordEn.slice(longestString.length, wordEn.length);
+  console.log(stemmedPrefix + ` len : ${stemmedPrefix.length}`);
+  if(stemmedPrefix.length <3 ){
+    stemmedPrefix = wordEn;
+  }
+  return stemmedPrefix;
 }
 
 // Function to remove suffixes
@@ -50,16 +60,20 @@ function removeSuffix(wordEn) {
       best_suffix.push(found);
     }
   }
-  console.log(best_suffix);
+  console.log(`List : ${best_suffix}`);
 
   let longestString = "";
   for (const str of best_suffix) {
     if (str.length > longestString.length) {
-      longestString = str;
+      longestString = str; 
     }
   }
 
   let stemmedWord = wordEn.slice(0, -longestString.length);
+  if(stemmedWord.length<3){
+            stemmedWord = wordEn;
+
+  }
   return stemmedWord;
 }
 
@@ -117,7 +131,9 @@ function convertToAmharic(wordEn) {
           );
 
           // Add the matched character to the result
-          wordAm = amharicChar + wordAm;
+          if(amharicChar){
+            wordAm = amharicChar + wordAm;
+          }
 
           // Reset the possibleSubstring and break
           possibleSubstring = "";
@@ -132,7 +148,10 @@ function convertToAmharic(wordEn) {
         );
         console.log(possibleSubstring);
         // Add the matched character to the result
-        wordAm = amharicChar + wordAm;
+        if(amharicChar){
+          wordAm = amharicChar + wordAm;
+
+        }
 
         // Reset the possibleSubstring and break
         possibleSubstring = "";
@@ -151,23 +170,23 @@ function convertToAmharic(wordEn) {
 
 // Main function to stem words
 function stemWord(word) {
-  let stemmedWord = lookupInDictionary(word);
+  // let stemmedWord = lookupInDictionary(word);
 
-  if (stemmedWord !== word) {
-    console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
-  } else {
+  // if (stemmedWord !== word) {
+    // console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
+  // } else {
     const wordEn = convertToEnglish(word);
     const wordWithoutPrefix = removePrefix(wordEn);
     const wordWithoutSuffix = removeSuffix(wordWithoutPrefix);
-    stemmedWord = convertToAmharic(wordWithoutSuffix);
-  }
-  return stemmedWord;
+    return convertToAmharic(wordWithoutSuffix);
+  // }
+  // return stemmedWord;
 }
 
 // Function to stem a full text
 function stemText(text) {
   text = removePunctuation(text);
-  text = removeStopWords(text);
+  // text = removeStopWords(text);
 
   const words = text.split(" ");
 
