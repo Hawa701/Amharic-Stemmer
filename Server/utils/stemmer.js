@@ -44,7 +44,7 @@ function removePrefix(wordEn) {
 
   let stemmedPrefix =  wordEn.slice(longestString.length, wordEn.length);
   // console.log(stemmedPrefix + ` len : ${stemmedPrefix.length}`);
-  if(stemmedPrefix.length <3 ){
+  if(stemmedPrefix.length <5){
     stemmedPrefix = wordEn;
   }
   return stemmedPrefix;
