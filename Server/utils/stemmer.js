@@ -89,7 +89,7 @@ function removesuffix(wordEn) {
 
   for(const suffix in top_three){
     stemmedWord = wordEn.slice(0, -top_three[suffix].length);
-    if(stemmedWord.length>2){
+    if(stemmedWord.length>3){
       break;
       }
       else{

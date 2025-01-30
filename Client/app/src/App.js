@@ -3,49 +3,50 @@ import axios from "axios";
 
 function App() {
   const [inputText, setInputText] = useState("");
-  const [stemmedWord, setStemmedWord] = useState("");
+  const [results, setResults] = useState([]);
   const [error, setError] = useState("");
 
-  const handleStem = async () => {
+  const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/stemmer/${encodeURIComponent(inputText)}`
+        `http://localhost:3001/vsm/${encodeURIComponent(inputText)}`
       );
-      setStemmedWord(response.data.stemmed);
+
+      setResults(response.data.results);
       setError("");
     } catch (err) {
-      console.error("Error stemming text:", err);
-      setError("Failed to stem the word. Please try again.");
+      console.error("Error searching text:", err);
+      setError("Failed to search the text. Please try again.");
     }
   };
 
-  
-
   return (
     <div className="container">
-      <h1>Amharic Stemmer</h1>
-
-      <textarea
-        rows="5"
-        cols="50"
+      <h1>Amharic Search Engine</h1>
+      <input
+        type="text"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        placeholder="Enter Amharic text"
+        placeholder="Enter search query"
+        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
-
-      <button onClick={handleStem} style={{ marginTop: "10px" }}>
-        Stem Word
+      <button onClick={handleSearch} style={{ width: "100%", padding: "10px" }}>
+        Search
       </button>
-
-      {stemmedWord && (
-        <div className="result">
-          <p>
-            Stemmed text፡
-            <strong>{" " + stemmedWord}</strong>
-          </p>
+      {results.length > 0 && (
+        <div className="results">
+          <h2>Search Results</h2>
+          <ul>
+            {results.map((result, index) => (
+              <li key={index}>
+                <a href={result.link} target="_blank" rel="noopener noreferrer">
+                  {result.title}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
