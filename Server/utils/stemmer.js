@@ -216,23 +216,23 @@ function convertToAmharic(wordEn) {
 
 // Main function to stem words
 function stemWord(word) {
-  // let stemmedWord = lookupInDictionary(word);
+  let stemmedWord = lookupInDictionary(word);
 
-  // if (stemmedWord !== word) {
-    // console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
-  // } else {
+  if (stemmedWord !== word) {
+    console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
+  } else {
     const wordEn = convertToEnglish(word);
     const wordWithoutPrefix = removePrefix(wordEn);
     const wordWithoutSuffix = removeSuffix(wordWithoutPrefix);
     return convertToAmharic(wordWithoutSuffix);
-  // }
-  // return stemmedWord;
+  }
+  return stemmedWord;
 }
 
 // Function to stem a full text
 function stemText(text) {
   text = removePunctuation(text);
-  // text = removeStopWords(text);
+  text = removeStopWords(text);
 
   const words = text.split(" ");
 
