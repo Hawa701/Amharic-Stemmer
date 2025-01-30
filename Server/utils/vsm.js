@@ -14,15 +14,16 @@ function readDocuments() {
     documents[file] = content;
   });
 
-  console.log(documents);
   return documents;
 }
 
 // Function to create a term frequency (TF) map
 function createTFMap(documents) {
+  // console.log(documents)
   const tfMap = {};
 
   for (const [docName, content] of Object.entries(documents)) {
+    // console.log(`${docName}`)
     const stemmedContent = stemmer.stemText(content);
     const words = stemmedContent.split(" ");
 
@@ -36,6 +37,7 @@ function createTFMap(documents) {
       tfMap[word][docName]++;
     });
   }
+  // console.log(`TF:\n ${tfMap}`);
 
   return tfMap;
 }
@@ -46,9 +48,11 @@ function createIDFMap(tfMap, totalDocuments) {
 
   for (const [term, docFreqs] of Object.entries(tfMap)) {
     const docCount = Object.keys(docFreqs).length;
+    // console.log(`${term} ${docCount}`);
     idfMap[term] = Math.log2(totalDocuments / docCount);
   }
 
+  // console.log(`IDF:\n ${idfMap}`);
   return idfMap;
 }
 
@@ -97,17 +101,21 @@ function saveToXLSX(tfMap, idfMap, tfidfMap, totalDocuments) {
 
   const worksheet = xlsx.utils.aoa_to_sheet(data);
   xlsx.utils.book_append_sheet(workbook, worksheet, "TF-IDF");
-  xlsx.writeFile(workbook, "tfidf.xlsx");
+  xlsx.writeFile(workbook, "IndexFile.xlsx");
 }
 
 // Function to calculate cosine similarity
 function cosineSimilarity(vec1, vec2) {
   const dotProduct = Object.keys(vec1).reduce((sum, key) => {
-    return sum + (vec1[key] * (vec2[key] || 0));
+    return sum + vec1[key] * (vec2[key] || 0);
   }, 0);
 
-  const magnitude1 = Math.sqrt(Object.values(vec1).reduce((sum, val) => sum + val * val, 0));
-  const magnitude2 = Math.sqrt(Object.values(vec2).reduce((sum, val) => sum + val * val, 0));
+  const magnitude1 = Math.sqrt(
+    Object.values(vec1).reduce((sum, val) => sum + val * val, 0)
+  );
+  const magnitude2 = Math.sqrt(
+    Object.values(vec2).reduce((sum, val) => sum + val * val, 0)
+  );
 
   if (magnitude1 === 0 || magnitude2 === 0) return 0;
 
@@ -115,55 +123,6 @@ function cosineSimilarity(vec1, vec2) {
 }
 
 // Function to process the search query and documents
-function processQueryAndDocuments(query) {
-  console.log("Received search query:", query); // Add logging
-  const documents = readDocuments();
-  const totalDocuments = Object.keys(documents).length;
-
-  const tfMap = createTFMap(documents);
-  const idfMap = createIDFMap(tfMap, totalDocuments);
-  const tfidfMap = createTFIDFMap(tfMap, idfMap);
-
-  saveToXLSX(tfMap, idfMap, tfidfMap, totalDocuments);
-
-  // Process the query as a single document
-  const queryStemmed = stemmer.stemText(query);
-  const queryWords = queryStemmed.split(" ");
-  const queryTF = {};
-  queryWords.forEach(word => {
-    if (!queryTF[word]) queryTF[word] = 0;
-    queryTF[word]++;
-  });
-
-  const queryTFIDF = {};
-  for (const word of queryWords) {
-    queryTFIDF[word] = (queryTF[word] || 0) * (idfMap[word] || 0);
-  }
-
-  // Calculate cosine similarity
-  const similarities = [];
-  for (const docName of Object.keys(documents)) {
-    const docTFIDF = {};
-    for (const word of queryWords) {
-      docTFIDF[word] = tfidfMap[word] ? (tfidfMap[word][docName] || 0) : 0;
-    }
-    const similarity = cosineSimilarity(queryTFIDF, docTFIDF);
-    similarities.push({ docName, similarity });
-  }
-
-  // Sort documents by similarity
-  similarities.sort((a, b) => b.similarity - a.similarity);
-
-  // Prepare results
-  const results = similarities.map(sim => ({
-    title: sim.docName,
-    link: `http://localhost:3001/documents/${sim.docName}`
-  }));
-
-  return results;
-}
-
-// Main function to process documents and create the TF-IDF map
 function processDocumentsAndQuery(query) {
   const documents = readDocuments();
   const totalDocuments = Object.keys(documents).length;
@@ -178,7 +137,7 @@ function processDocumentsAndQuery(query) {
   const queryStemmed = stemmer.stemText(query);
   const queryWords = queryStemmed.split(" ");
   const queryTF = {};
-  queryWords.forEach(word => {
+  queryWords.forEach((word) => {
     if (!queryTF[word]) queryTF[word] = 0;
     queryTF[word]++;
   });
@@ -193,7 +152,7 @@ function processDocumentsAndQuery(query) {
   for (const docName of Object.keys(documents)) {
     const docTFIDF = {};
     for (const word of queryWords) {
-      docTFIDF[word] = tfidfMap[word] ? (tfidfMap[word][docName] || 0) : 0;
+      docTFIDF[word] = tfidfMap[word] ? tfidfMap[word][docName] || 0 : 0;
     }
     const similarity = cosineSimilarity(queryTFIDF, docTFIDF);
     similarities.push({ docName, similarity });
@@ -201,13 +160,17 @@ function processDocumentsAndQuery(query) {
 
   // Sort documents by similarity
   similarities.sort((a, b) => b.similarity - a.similarity);
-  similarities = Array.from(similarities.filter((sim)=>sim.similarity > 0));
+  similarities = Array.from(similarities.filter((sim) => sim.similarity > 0));
+
   // Prepare results
-  const results = similarities.map(sim => ({
+  const results = similarities.map((sim) => ({
     title: sim.docName,
-    link: `http://localhost:3001/documents/${sim.docName}`
+    link: `http://localhost:3001/documents/${sim.docName}`,
   }));
 
+  if (!results) {
+    return `"No Search Result found for ${query}"`;
+  }
   return results;
 }
 

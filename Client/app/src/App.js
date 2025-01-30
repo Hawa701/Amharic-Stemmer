@@ -12,7 +12,11 @@ function App() {
         `http://localhost:3001/vsm/${encodeURIComponent(inputText)}`
       );
 
-      setResults(response.data.results);
+      setResults(
+        response.data.results.length > 0
+          ? response.data.results
+          : ["No search results found."]
+      );
       setError("");
     } catch (err) {
       console.error("Error searching text:", err);
@@ -33,20 +37,32 @@ function App() {
       <button onClick={handleSearch} style={{ width: "100%", padding: "10px" }}>
         Search
       </button>
-      {results.length > 0 && (
-        <div className="results">
-          <h2>Search Results</h2>
-          <ul>
-            {results.map((result, index) => (
-              <li key={index}>
-                <a href={result.link} target="_blank" rel="noopener noreferrer">
-                  {result.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="results">
+        {results.length > 0 ? (
+          <>
+            <h2>Search Results</h2>
+            <ul>
+              {results.map((result, index) => (
+                <li key={index}>
+                  {typeof result === "string" ? (
+                    result
+                  ) : (
+                    <a
+                      href={result.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {result.title}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>No search results found.</p>
+        )}
+      </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );

@@ -1,14 +1,14 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 40px 0;
   background-color: #f4f4f4;
-  height: 90vh;
+  min-height: 90vh; 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
 }
 
 h1 {
@@ -60,9 +60,39 @@ button:hover {
   /* border: 1px solid red; */
   width: 80%;
   max-height: 100vh;
+  overflow-y: scroll;
 }
 
 .results li{
   list-style-type: none;
   padding: 4px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .results {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 20px 0;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  button {
+    font-size: 14px;
+  }
 }

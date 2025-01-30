@@ -219,7 +219,7 @@ function stemWord(word) {
   let stemmedWord = lookupInDictionary(word);
 
   if (stemmedWord !== word) {
-    console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
+    // console.log(`Dictionary lookup: ${word} -> ${stemmedWord}`);
   } else {
     const wordEn = convertToEnglish(word);
     const wordWithoutPrefix = removePrefix(wordEn);

@@ -5,7 +5,8 @@ const fs = require("fs");
 const path = require("path");
 
 const { stemText } = require("./utils/stemmer");
-const { processDocumentsAndQuery } = require("./utils/vsm");
+// const { processDocumentsAndQuery } = require("./utils/vsm");
+const { processQuery } = require("./utils/vsm2");
 
 const app = express();
 const PORT = 3001;
@@ -25,7 +26,7 @@ app.get("/stemmer/:word", (req, res) => {
 
 app.get("/vsm/:word", (req, res) => {
   const word = req.params.word;
-  const stemmedWord = processDocumentsAndQuery(word);
+  const stemmedWord = processQuery(word);
   res.json({ original: word, results: stemmedWord });
 });
 
